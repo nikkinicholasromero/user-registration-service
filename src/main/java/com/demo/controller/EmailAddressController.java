@@ -1,6 +1,8 @@
 package com.demo.controller;
 
 import com.demo.model.StatusResponse;
+import com.demo.service.EmailAddressService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,9 +15,12 @@ import javax.validation.constraints.Email;
 @RequestMapping("/emailAddress")
 @Validated
 public class EmailAddressController {
+    @Autowired
+    private EmailAddressService emailAddressService;
+
     @GetMapping("/{emailAddress}")
-    public ResponseEntity<Object> getEmailAddress(@PathVariable("emailAddress") @Email String emailAddress) {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String> getEmailAddressStatus(@PathVariable("emailAddress") @Email String emailAddress) {
+        return new ResponseEntity<>(emailAddressService.getEmailAddressStatus(emailAddress).getMessage(), HttpStatus.OK);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
