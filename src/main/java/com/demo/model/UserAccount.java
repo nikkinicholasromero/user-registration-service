@@ -14,11 +14,12 @@ public class UserAccount {
     @Column(name = "ID")
     private Integer id;
 
-    @Email
-    @NotBlank
+    @Email(message = "validation.email-address.format")
+    @NotBlank(message = "validation.email-address.required")
     @Column(name = "EMAIL_ADDRESS")
     private String emailAddress;
 
+    @NotBlank(message = "validation.password.required")
     @Column(name = "PASSWORD")
     private String password;
 
@@ -26,11 +27,11 @@ public class UserAccount {
     @Enumerated(EnumType.STRING)
     private EmailAddressStatus status;
 
-    @NotBlank
+    @NotBlank(message = "validation.first-name.required")
     @Column(name = "FIRST_NAME")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(message = "validation.last-name.required")
     @Column(name = "LAST_NAME")
     private String lastName;
 }
