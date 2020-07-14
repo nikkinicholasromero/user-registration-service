@@ -7,26 +7,37 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(EmailAddressController.class)
+@WebMvcTest
+@WebAppConfiguration
 public class EmailAddressControllerTest {
-    @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext context;
 
     @MockBean
     private EmailAddressService emailAddressService;
 
+    @MockBean
+    private ErrorHandlerAdvice errorHandlerAdvice;
+
     @BeforeEach
     public void setup() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+
         when(emailAddressService.getEmailAddressStatus(anyString())).thenReturn(EmailAddressStatus.ACTIVATED);
     }
 
@@ -38,16 +49,5 @@ public class EmailAddressControllerTest {
                 .andExpect(content().string(equalTo("Activated")));
 
         verify(emailAddressService, times(1)).getEmailAddressStatus("valid@email.com");
-    }
-
-    @Test
-    public void getEmailAddressStatus_invalidEmailAddress() throws Exception {
-        this.mockMvc.perform(get("/emailAddress/invalid@@email.com"))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("errors", hasSize(1)))
-                .andExpect(jsonPath("errors[0].code", is("INVALID_EMAIL_ADDRESS_FORMAT")))
-                .andExpect(jsonPath("errors[0].message", is("Email address format is invalid.")));
     }
 }
