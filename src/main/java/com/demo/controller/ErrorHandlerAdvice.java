@@ -25,16 +25,18 @@ public class ErrorHandlerAdvice {
     private MessageSource messageSource;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<FieldError> errors = ex.getBindingResult().getFieldErrors();
-        ErrorResponse errorResponse = buildErrorResponse(errors.stream().map(FieldError::getDefaultMessage).collect(Collectors.toList()));
+        ErrorResponse errorResponse = buildErrorResponse(
+                errors.stream().map(FieldError::getDefaultMessage).collect(Collectors.toList()));
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleException(ConstraintViolationException ex) {
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
         Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
-        ErrorResponse errorResponse = buildErrorResponse(errors.stream().map(ConstraintViolation::getMessage).collect(Collectors.toList()));
+        ErrorResponse errorResponse = buildErrorResponse(
+                errors.stream().map(ConstraintViolation::getMessage).collect(Collectors.toList()));
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -49,7 +51,6 @@ public class ErrorHandlerAdvice {
 
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setErrors(errorDetails);
-
         return errorResponse;
     }
 }
