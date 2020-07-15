@@ -1,5 +1,7 @@
-package com.demo.controller;
+package com.demo.controller.exception;
 
+import com.demo.controller.exception.ErrorHandlerAdvice;
+import com.demo.controller.exception.ErrorResponseBuilder;
 import com.demo.model.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.demo.controller;
+package com.demo.controller.exception;
 
 import com.demo.model.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
