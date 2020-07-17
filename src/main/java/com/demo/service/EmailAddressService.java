@@ -1,7 +1,7 @@
 package com.demo.service;
 
 import com.demo.model.EmailAddressStatus;
-import com.demo.model.UserAccount;
+import com.demo.model.projection.EmailAddressStatusView;
 import com.demo.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +14,9 @@ public class EmailAddressService {
     private UserAccountRepository userAccountRepository;
 
     public EmailAddressStatus getEmailAddressStatus(String emailAddress) {
-        Optional<UserAccount> userAccount = userAccountRepository.getUserAccountByEmailAddress(emailAddress);
-        if (userAccount.isPresent()) {
-            return userAccount.get().getStatus();
+        Optional<EmailAddressStatusView> emailAddressStatus = userAccountRepository.getUserAccountByEmailAddress(emailAddress);
+        if (emailAddressStatus.isPresent()) {
+            return emailAddressStatus.get().getStatus();
         } else {
             return EmailAddressStatus.NOT_REGISTERED;
         }

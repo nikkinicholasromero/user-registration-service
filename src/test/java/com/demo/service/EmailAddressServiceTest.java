@@ -1,7 +1,7 @@
 package com.demo.service;
 
 import com.demo.model.EmailAddressStatus;
-import com.demo.model.UserAccount;
+import com.demo.model.projection.EmailAddressStatusView;
 import com.demo.repository.UserAccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,23 +22,23 @@ public class EmailAddressServiceTest {
     @Mock
     private UserAccountRepository userAccountRepository;
 
-    private Optional<UserAccount> optionalUserAccount;
+    private Optional<EmailAddressStatusView> optionalEmailAddressStatusView;
 
-    private UserAccount userAccount;
+    @Mock
+    private EmailAddressStatusView emailAddressStatusView;
 
     @BeforeEach
     private void setup() {
         MockitoAnnotations.initMocks(this);
 
-        userAccount = new UserAccount();
-        userAccount.setStatus(EmailAddressStatus.ACTIVATED);
+        when(emailAddressStatusView.getStatus()).thenReturn(EmailAddressStatus.ACTIVATED);
     }
 
     @Test
     public void getEmailAddressStatus_userAccountExists_thenReturnEmailAddressStatus() {
-        optionalUserAccount = Optional.of(userAccount);
+        optionalEmailAddressStatusView = Optional.of(emailAddressStatusView);
         when(userAccountRepository.getUserAccountByEmailAddress(anyString()))
-                .thenReturn(optionalUserAccount);
+                .thenReturn(optionalEmailAddressStatusView);
 
         EmailAddressStatus status = target.getEmailAddressStatus("some@email.com");
 
@@ -49,9 +49,9 @@ public class EmailAddressServiceTest {
 
     @Test
     public void getEmailAddressStatus_userAccountDoesNotExist_thenReturnNotRegistered() {
-        optionalUserAccount = Optional.ofNullable(null);
+        optionalEmailAddressStatusView = Optional.ofNullable(null);
         when(userAccountRepository.getUserAccountByEmailAddress(anyString()))
-                .thenReturn(optionalUserAccount);
+                .thenReturn(optionalEmailAddressStatusView);
 
         EmailAddressStatus status = target.getEmailAddressStatus("some@email.com");
 
