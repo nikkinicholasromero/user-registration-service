@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -12,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 public class UserAccount {
     @Id
     @Column(name = "ID")
-    private Integer id;
+    private String id;
 
     @Email(message = "validation.email-address.format")
     @NotBlank(message = "validation.email-address.required")
@@ -22,6 +23,15 @@ public class UserAccount {
     @NotBlank(message = "validation.password.required")
     @Column(name = "PASSWORD")
     private String password;
+
+    @Column(name = "SALT")
+    private String salt;
+
+    @Column(name = "ACTIVATION_CODE")
+    private String activationCode;
+
+    @Column(name = "ACTIVATION_EXPIRATION")
+    private LocalDateTime activationExpiration;
 
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
