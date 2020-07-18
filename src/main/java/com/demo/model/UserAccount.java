@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Data
@@ -21,6 +22,7 @@ public class UserAccount {
     private String emailAddress;
 
     @NotBlank(message = "validation.password.required")
+    @Size(min = 8, message = "validation.password.length")
     @Column(name = "PASSWORD")
     private String password;
 

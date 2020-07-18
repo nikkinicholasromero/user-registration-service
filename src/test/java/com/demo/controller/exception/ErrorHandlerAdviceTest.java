@@ -1,7 +1,7 @@
 package com.demo.controller.exception;
 
-import com.demo.controller.exception.ErrorHandlerAdvice;
-import com.demo.controller.exception.ErrorResponseBuilder;
+import com.demo.exception.EmailAddressIsAlreadyTakenException;
+import com.demo.exception.EmailAddressIsDueForActivationException;
 import com.demo.model.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +58,7 @@ public class ErrorHandlerAdviceTest {
         when(fieldError2.getDefaultMessage()).thenReturn("E2");
         when(fieldError3.getDefaultMessage()).thenReturn("E3");
 
-        ResponseEntity<ErrorResponse> actual = target.handleMethodArgumentNotValidException(ex);
+        ResponseEntity<ErrorResponse> actual = target.handleException(ex);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -89,7 +89,7 @@ public class ErrorHandlerAdviceTest {
 
         when(ex.getConstraintViolations()).thenReturn(constraintViolations);
 
-        ResponseEntity<ErrorResponse> actual = target.handleConstraintViolationException(ex);
+        ResponseEntity<ErrorResponse> actual = target.handleException(ex);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -103,5 +103,37 @@ public class ErrorHandlerAdviceTest {
         assertThat(errorCodes.indexOf("E1")).isNotNegative();
         assertThat(errorCodes.indexOf("E2")).isNotNegative();
         assertThat(errorCodes.indexOf("E3")).isNotNegative();
+    }
+
+    @Test
+    public void handleEmailAddressIsAlreadyTakenException() {
+        ResponseEntity<ErrorResponse> actual = target.handleException(new EmailAddressIsAlreadyTakenException());
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(actual.getBody()).isEqualTo(errorResponse);
+
+        verify(errorResponseBuilder, times(1))
+                .build(errorCodesArgumentCaptor.capture());
+        List<String> errorCodes = errorCodesArgumentCaptor.getValue();
+        assertThat(errorCodes).isNotEmpty();
+        assertThat(errorCodes.size()).isEqualTo(1);
+        assertThat(errorCodes.indexOf("email-address.already-taken")).isNotNegative();
+    }
+
+    @Test
+    public void handleEmailAddressIsDueForActivationException() {
+        ResponseEntity<ErrorResponse> actual = target.handleException(new EmailAddressIsDueForActivationException());
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(actual.getBody()).isEqualTo(errorResponse);
+
+        verify(errorResponseBuilder, times(1))
+                .build(errorCodesArgumentCaptor.capture());
+        List<String> errorCodes = errorCodesArgumentCaptor.getValue();
+        assertThat(errorCodes).isNotEmpty();
+        assertThat(errorCodes.size()).isEqualTo(1);
+        assertThat(errorCodes.indexOf("email-address.activation-due")).isNotNegative();
     }
 }
