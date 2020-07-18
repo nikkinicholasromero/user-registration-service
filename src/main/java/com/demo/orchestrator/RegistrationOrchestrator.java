@@ -1,6 +1,7 @@
 package com.demo.orchestrator;
 
 import com.demo.exception.EmailAddressIsAlreadyTakenException;
+import com.demo.exception.EmailAddressIsDueForActivationException;
 import com.demo.external.email.EmailService;
 import com.demo.external.email.Mail;
 import com.demo.external.hash.HashService;
@@ -15,8 +16,6 @@ import com.demo.service.UuidGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 @Component
 public class RegistrationOrchestrator {
@@ -52,7 +51,9 @@ public class RegistrationOrchestrator {
 
     public void orchestrate(UserAccount userAccount) {
         EmailAddressStatus status = emailAddressService.getEmailAddressStatus(userAccount.getEmailAddress());
-        if (!EmailAddressStatus.NOT_REGISTERED.equals(status)) {
+        if (EmailAddressStatus.REGISTERED.equals(status)) {
+            throw new EmailAddressIsDueForActivationException();
+        } else if (!EmailAddressStatus.NOT_REGISTERED.equals(status)) {
             throw new EmailAddressIsAlreadyTakenException();
         }
 
