@@ -47,7 +47,7 @@ public class EmailAddressControllerTest {
         mockMvc.perform(get("/emailAddress/valid@email.com"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(equalTo("Activated")));
+                .andExpect(content().string(equalTo("ACTIVATED")));
 
         verify(emailAddressService, times(1)).getEmailAddressStatus("valid@email.com");
     }

@@ -1,12 +1,14 @@
 package com.demo;
 
+import com.demo.mock.MockRestTemplateBuilder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
 
@@ -43,7 +45,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
+    @Profile("mock")
+    public RestTemplateBuilder restTemplateBuilder() {
+        return new MockRestTemplateBuilder();
     }
 }

@@ -22,6 +22,6 @@ public class EmailAddressController {
     @GetMapping("/{emailAddress:.+}")
     public ResponseEntity<String> getEmailAddressStatus(
             @PathVariable("emailAddress") @Email(message = "validation.email-address.format") String emailAddress) {
-        return new ResponseEntity<>(emailAddressService.getEmailAddressStatus(emailAddress).getMessage(), HttpStatus.OK);
+        return new ResponseEntity<>(emailAddressService.getEmailAddressStatus(emailAddress).name(), HttpStatus.OK);
     }
 }
