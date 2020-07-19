@@ -19,7 +19,7 @@ public class EmailAddressController {
     @Autowired
     private EmailAddressService emailAddressService;
 
-    @GetMapping("/{emailAddress}")
+    @GetMapping("/{emailAddress:.+}")
     public ResponseEntity<String> getEmailAddressStatus(
             @PathVariable("emailAddress") @Email(message = "validation.email-address.format") String emailAddress) {
         return new ResponseEntity<>(emailAddressService.getEmailAddressStatus(emailAddress).getMessage(), HttpStatus.OK);
