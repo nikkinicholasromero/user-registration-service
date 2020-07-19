@@ -1,6 +1,8 @@
 package com.demo;
 
 import com.demo.mock.MockRestTemplateBuilder;
+import com.demo.model.UserAccount;
+import com.demo.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.MessageSource;
@@ -58,7 +60,7 @@ public class ApplicationConfig {
     public LocalContainerEntityManagerFactoryBean entityManager() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan("com.demo.model", "com.demo.repository.demo2");
+        em.setPackagesToScan("com.demo");
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
