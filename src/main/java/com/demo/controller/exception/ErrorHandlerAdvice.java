@@ -1,7 +1,5 @@
 package com.demo.controller.exception;
 
-import com.demo.exception.EmailAddressIsAlreadyTakenException;
-import com.demo.exception.EmailAddressIsDueForActivationException;
 import com.demo.model.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,14 +38,9 @@ public class ErrorHandlerAdvice {
         return buildResponseEntity(errorCodes);
     }
 
-    @ExceptionHandler(EmailAddressIsAlreadyTakenException.class)
-    public ResponseEntity<ErrorResponse> handleException(EmailAddressIsAlreadyTakenException e) {
-        return buildResponseEntity(Collections.singletonList(e.code));
-    }
-
-    @ExceptionHandler(EmailAddressIsDueForActivationException.class)
-    public ResponseEntity<ErrorResponse> handleException(EmailAddressIsDueForActivationException e) {
-        return buildResponseEntity(Collections.singletonList(e.code));
+    @ExceptionHandler(UserRegistrationException.class)
+    public ResponseEntity<ErrorResponse> handleException(UserRegistrationException e) {
+        return buildResponseEntity(Collections.singletonList(e.getType().getCode()));
     }
 
     private ResponseEntity<ErrorResponse> buildResponseEntity(List<String> errorsString) {

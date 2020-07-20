@@ -37,26 +37,26 @@ public class EmailAddressServiceTest {
     @Test
     public void getEmailAddressStatus_userAccountExists_thenReturnEmailAddressStatus() {
         optionalEmailAddressStatusView = Optional.of(emailAddressStatusView);
-        when(userAccountRepository.getUserAccountByEmailAddress(anyString()))
+        when(userAccountRepository.getEmailAddressStatusByEmailAddress(anyString()))
                 .thenReturn(optionalEmailAddressStatusView);
 
         EmailAddressStatus status = target.getEmailAddressStatus("some@email.com");
 
         assertThat(status).isEqualTo(EmailAddressStatus.ACTIVATED);
 
-        verify(userAccountRepository, times(1)).getUserAccountByEmailAddress("some@email.com");
+        verify(userAccountRepository, times(1)).getEmailAddressStatusByEmailAddress("some@email.com");
     }
 
     @Test
     public void getEmailAddressStatus_userAccountDoesNotExist_thenReturnNotRegistered() {
         optionalEmailAddressStatusView = Optional.ofNullable(null);
-        when(userAccountRepository.getUserAccountByEmailAddress(anyString()))
+        when(userAccountRepository.getEmailAddressStatusByEmailAddress(anyString()))
                 .thenReturn(optionalEmailAddressStatusView);
 
         EmailAddressStatus status = target.getEmailAddressStatus("some@email.com");
 
         assertThat(status).isEqualTo(EmailAddressStatus.NOT_REGISTERED);
 
-        verify(userAccountRepository, times(1)).getUserAccountByEmailAddress("some@email.com");
+        verify(userAccountRepository, times(1)).getEmailAddressStatusByEmailAddress("some@email.com");
     }
 }

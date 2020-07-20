@@ -35,6 +35,6 @@ public class RegistrationControllerIntegrationTest {
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(userAccount)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 }

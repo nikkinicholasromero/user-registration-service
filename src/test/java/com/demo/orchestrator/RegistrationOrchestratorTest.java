@@ -1,7 +1,7 @@
 package com.demo.orchestrator;
 
-import com.demo.exception.EmailAddressIsAlreadyTakenException;
-import com.demo.exception.EmailAddressIsDueForActivationException;
+import com.demo.controller.exception.UserRegistrationException;
+import com.demo.controller.exception.UserRegistrationExceptionType;
 import com.demo.external.email.EmailService;
 import com.demo.external.email.Mail;
 import com.demo.external.hash.HashService;
@@ -10,7 +10,7 @@ import com.demo.model.Activation;
 import com.demo.model.EmailAddressStatus;
 import com.demo.model.UserAccount;
 import com.demo.repository.UserAccountRepository;
-import com.demo.service.ActivationService;
+import com.demo.service.ActivationGenerator;
 import com.demo.service.EmailAddressService;
 import com.demo.service.UuidGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +39,7 @@ public class RegistrationOrchestratorTest {
     private HashService hashService;
 
     @Mock
-    private ActivationService activationService;
+    private ActivationGenerator activationGenerator;
 
     @Mock
     private UuidGenerator uuidGenerator;
@@ -70,7 +70,7 @@ public class RegistrationOrchestratorTest {
 
         when(saltGenerationService.generateRandomSalt()).thenReturn("someSalt");
         when(hashService.hash(anyString(), anyString())).thenReturn("someHash");
-        when(activationService.generateActivation()).thenReturn(activation);
+        when(activationGenerator.generateActivation()).thenReturn(activation);
         when(uuidGenerator.generateRandomUuid()).thenReturn("sommeUuid");
     }
 
@@ -81,7 +81,8 @@ public class RegistrationOrchestratorTest {
         UserAccount userAccount = new UserAccount();
         userAccount.setEmailAddress("someEmail@address.com");
 
-        assertThrows(EmailAddressIsDueForActivationException.class, () -> target.orchestrate(userAccount));
+        UserRegistrationException e = assertThrows(UserRegistrationException.class, () -> target.orchestrate(userAccount));
+        assertThat(e.getType()).isEqualTo(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_DUE_FOR_ACTIVATION_EXCEPTION);
 
         verify(emailAddressService, times(1)).getEmailAddressStatus("someEmail@address.com");
     }
@@ -93,7 +94,8 @@ public class RegistrationOrchestratorTest {
         UserAccount userAccount = new UserAccount();
         userAccount.setEmailAddress("someEmail@address.com");
 
-        assertThrows(EmailAddressIsAlreadyTakenException.class, () -> target.orchestrate(userAccount));
+        UserRegistrationException e = assertThrows(UserRegistrationException.class, () -> target.orchestrate(userAccount));
+        assertThat(e.getType()).isEqualTo(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_ALREADY_TAKEN_EXCEPTION);
 
         verify(emailAddressService, times(1)).getEmailAddressStatus("someEmail@address.com");
     }
@@ -112,7 +114,7 @@ public class RegistrationOrchestratorTest {
 
         verify(saltGenerationService, times(1)).generateRandomSalt();
         verify(hashService, times(1)).hash("userInputPassword", "someSalt");
-        verify(activationService, times(1)).generateActivation();
+        verify(activationGenerator, times(1)).generateActivation();
         verify(uuidGenerator, times(1)).generateRandomUuid();
         verify(userAccountRepository, times(1)).save(userAccountArgumentCaptor.capture());
 

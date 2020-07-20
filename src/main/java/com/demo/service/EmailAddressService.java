@@ -14,7 +14,7 @@ public class EmailAddressService {
     private UserAccountRepository userAccountRepository;
 
     public EmailAddressStatus getEmailAddressStatus(String emailAddress) {
-        Optional<EmailAddressStatusView> emailAddressStatus = userAccountRepository.getUserAccountByEmailAddress(emailAddress);
+        Optional<EmailAddressStatusView> emailAddressStatus = userAccountRepository.getEmailAddressStatusByEmailAddress(emailAddress);
         if (emailAddressStatus.isPresent()) {
             return emailAddressStatus.get().getStatus();
         } else {

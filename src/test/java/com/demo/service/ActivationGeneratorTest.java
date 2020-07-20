@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class ActivationServiceTest {
+public class ActivationGeneratorTest {
     @InjectMocks
-    private ActivationService target;
+    private ActivationGenerator target;
 
     @Mock
     private UuidGenerator uuidGenerator;

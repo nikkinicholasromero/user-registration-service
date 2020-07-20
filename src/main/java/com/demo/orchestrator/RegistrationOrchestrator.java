@@ -1,7 +1,7 @@
 package com.demo.orchestrator;
 
-import com.demo.exception.EmailAddressIsAlreadyTakenException;
-import com.demo.exception.EmailAddressIsDueForActivationException;
+import com.demo.controller.exception.UserRegistrationException;
+import com.demo.controller.exception.UserRegistrationExceptionType;
 import com.demo.external.email.EmailService;
 import com.demo.external.email.Mail;
 import com.demo.external.hash.HashService;
@@ -10,7 +10,7 @@ import com.demo.model.Activation;
 import com.demo.model.EmailAddressStatus;
 import com.demo.model.UserAccount;
 import com.demo.repository.UserAccountRepository;
-import com.demo.service.ActivationService;
+import com.demo.service.ActivationGenerator;
 import com.demo.service.EmailAddressService;
 import com.demo.service.UuidGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class RegistrationOrchestrator {
     private HashService hashService;
 
     @Autowired
-    private ActivationService activationService;
+    private ActivationGenerator activationGenerator;
 
     @Autowired
     private UuidGenerator uuidGenerator;
@@ -52,9 +52,9 @@ public class RegistrationOrchestrator {
     public void orchestrate(UserAccount userAccount) {
         EmailAddressStatus status = emailAddressService.getEmailAddressStatus(userAccount.getEmailAddress());
         if (EmailAddressStatus.REGISTERED.equals(status)) {
-            throw new EmailAddressIsDueForActivationException();
+            throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_DUE_FOR_ACTIVATION_EXCEPTION);
         } else if (!EmailAddressStatus.NOT_REGISTERED.equals(status)) {
-            throw new EmailAddressIsAlreadyTakenException();
+            throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_ALREADY_TAKEN_EXCEPTION);
         }
 
         String salt = saltGenerationService.generateRandomSalt();
@@ -62,7 +62,7 @@ public class RegistrationOrchestrator {
         userAccount.setPassword(hash);
         userAccount.setSalt(salt);
 
-        Activation activation = activationService.generateActivation();
+        Activation activation = activationGenerator.generateActivation();
         userAccount.setActivationCode(activation.getCode());
         userAccount.setActivationExpiration(activation.getExpiration());
 

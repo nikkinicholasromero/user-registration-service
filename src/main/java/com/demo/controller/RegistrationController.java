@@ -15,7 +15,7 @@ public class RegistrationController {
     private RegistrationOrchestrator registrationOrchestrator;
 
     @PostMapping("")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void registerUserAccount(@RequestBody @Valid UserAccount userAccount) {
         registrationOrchestrator.orchestrate(userAccount);
     }

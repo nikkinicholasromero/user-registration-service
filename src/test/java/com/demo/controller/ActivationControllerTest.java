@@ -1,8 +1,7 @@
 package com.demo.controller;
 
 import com.demo.controller.exception.ErrorHandlerAdvice;
-import com.demo.model.UserAccount;
-import com.demo.orchestrator.RegistrationOrchestrator;
+import com.demo.orchestrator.ActivationOrchestrator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,21 +11,20 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class RegistrationControllerTest {
+public class ActivationControllerTest {
     private MockMvc mockMvc;
 
     @InjectMocks
-    private RegistrationController target;
+    private ActivationController target;
 
     @Mock
-    private RegistrationOrchestrator registrationOrchestrator;
+    private ActivationOrchestrator activationOrchestrator;
 
     @Mock
     private ErrorHandlerAdvice errorHandlerAdvice;
@@ -45,19 +43,11 @@ public class RegistrationControllerTest {
     }
 
     @Test
-    public void registerUserAccount() throws Exception {
-        UserAccount userAccount = new UserAccount();
-        userAccount.setEmailAddress("some@email.com");
-        userAccount.setPassword("somePassword");
-        userAccount.setFirstName("someFirstName");
-        userAccount.setLastName("someLastName");
-
-        mockMvc.perform(post("/registration")
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(userAccount)))
+    public void activate() throws Exception {
+        mockMvc.perform(put("/activation/some@email.com?activationCode=abc123"))
                 .andDo(print())
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
 
-        verify(registrationOrchestrator, times(1)).orchestrate(eq(userAccount));
+        verify(activationOrchestrator, times(1)).orchestrate("some@email.com", "abc123");
     }
 }

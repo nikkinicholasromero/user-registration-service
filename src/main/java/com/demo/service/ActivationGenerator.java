@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-public class ActivationService {
+public class ActivationGenerator {
     @Autowired
     private UuidGenerator uuidGenerator;
 

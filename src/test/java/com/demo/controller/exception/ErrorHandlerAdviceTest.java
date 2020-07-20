@@ -1,7 +1,5 @@
 package com.demo.controller.exception;
 
-import com.demo.exception.EmailAddressIsAlreadyTakenException;
-import com.demo.exception.EmailAddressIsDueForActivationException;
 import com.demo.model.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -106,8 +104,11 @@ public class ErrorHandlerAdviceTest {
     }
 
     @Test
-    public void handleEmailAddressIsAlreadyTakenException() {
-        ResponseEntity<ErrorResponse> actual = target.handleException(new EmailAddressIsAlreadyTakenException());
+    public void handleUserRegistrationException() {
+        UserRegistrationException ex = Mockito.mock(UserRegistrationException.class);
+        when(ex.getType()).thenReturn(UserRegistrationExceptionType.EMAIL_ADDRESS_ACTIVATION_CODE_INCORRECT_EXCEPTION);
+
+        ResponseEntity<ErrorResponse> actual = target.handleException(ex);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -118,22 +119,6 @@ public class ErrorHandlerAdviceTest {
         List<String> errorCodes = errorCodesArgumentCaptor.getValue();
         assertThat(errorCodes).isNotEmpty();
         assertThat(errorCodes.size()).isEqualTo(1);
-        assertThat(errorCodes.indexOf("email-address.already-taken")).isNotNegative();
-    }
-
-    @Test
-    public void handleEmailAddressIsDueForActivationException() {
-        ResponseEntity<ErrorResponse> actual = target.handleException(new EmailAddressIsDueForActivationException());
-
-        assertThat(actual).isNotNull();
-        assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(actual.getBody()).isEqualTo(errorResponse);
-
-        verify(errorResponseBuilder, times(1))
-                .build(errorCodesArgumentCaptor.capture());
-        List<String> errorCodes = errorCodesArgumentCaptor.getValue();
-        assertThat(errorCodes).isNotEmpty();
-        assertThat(errorCodes.size()).isEqualTo(1);
-        assertThat(errorCodes.indexOf("email-address.activation-due")).isNotNegative();
+        assertThat(errorCodes.indexOf("email-address.activation-code-incorrect")).isNotNegative();
     }
 }
