@@ -88,7 +88,7 @@ public class RegistrationOrchestratorTest {
     }
 
     @Test
-    public void orchestrate_whenEmailAddressIsAlreadyTaken() {
+    public void orchestrate_whenEmailAddressIsAlreadyActivated() {
         when(emailAddressService.getEmailAddressStatus(anyString())).thenReturn(EmailAddressStatus.ACTIVATED);
 
         UserAccount userAccount = new UserAccount();

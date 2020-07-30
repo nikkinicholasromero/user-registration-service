@@ -53,7 +53,7 @@ public class RegistrationOrchestrator {
         EmailAddressStatus status = emailAddressService.getEmailAddressStatus(userAccount.getEmailAddress());
         if (EmailAddressStatus.REGISTERED.equals(status)) {
             throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_DUE_FOR_ACTIVATION_EXCEPTION);
-        } else if (!EmailAddressStatus.NOT_REGISTERED.equals(status)) {
+        } else if (EmailAddressStatus.ACTIVATED.equals(status)) {
             throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_ALREADY_TAKEN_EXCEPTION);
         }
 

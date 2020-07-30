@@ -18,26 +18,26 @@ public class ActivationOrchestrator {
 
     public void orchestrate(String emailAddress, String activationCode) {
         Optional<UserAccount> optionalUserAccount = userAccountRepository.getUserAccountByEmailAddress(emailAddress);
-        if (optionalUserAccount.isPresent()) {
-            UserAccount userAccount = optionalUserAccount.get();
-            if (!EmailAddressStatus.REGISTERED.equals(userAccount.getStatus())) {
-                throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_NOT_DUE_FOR_ACTIVATION_EXCEPTION);
-            }
-
-            if (!activationCode.equals(userAccount.getActivationCode())) {
-                throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_ACTIVATION_CODE_INCORRECT_EXCEPTION);
-            }
-
-            if (LocalDateTime.now().isAfter(userAccount.getActivationExpiration())) {
-                throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_ACTIVATION_EXPIRED_EXCEPTION);
-            }
-
-            userAccount.setStatus(EmailAddressStatus.ACTIVATED);
-            userAccount.setActivationCode(null);
-            userAccount.setActivationExpiration(null);
-            userAccountRepository.save(userAccount);
-        } else {
+        if (!optionalUserAccount.isPresent()) {
             throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_DOES_NOT_EXIST_EXCEPTION);
         }
+
+        UserAccount userAccount = optionalUserAccount.get();
+        if (!EmailAddressStatus.REGISTERED.equals(userAccount.getStatus())) {
+            throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_IS_NOT_DUE_FOR_ACTIVATION_EXCEPTION);
+        }
+
+        if (!activationCode.equals(userAccount.getActivationCode())) {
+            throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_ACTIVATION_CODE_INCORRECT_EXCEPTION);
+        }
+
+        if (LocalDateTime.now().isAfter(userAccount.getActivationExpiration())) {
+            throw new UserRegistrationException(UserRegistrationExceptionType.EMAIL_ADDRESS_ACTIVATION_EXPIRED_EXCEPTION);
+        }
+
+        userAccount.setStatus(EmailAddressStatus.ACTIVATED);
+        userAccount.setActivationCode(null);
+        userAccount.setActivationExpiration(null);
+        userAccountRepository.save(userAccount);
     }
 }

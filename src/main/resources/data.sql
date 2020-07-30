@@ -3,6 +3,3 @@ VALUES ('registeredId', 'registered@email.com', 'registeredPassword', 'registere
 
 INSERT INTO USER_ACCOUNTS (ID, EMAIL_ADDRESS, PASSWORD, SALT, STATUS, FIRST_NAME, LAST_NAME)
 VALUES ('activatedId', 'activated@email.com', 'activatedPassword', 'activatedSalt', 'ACTIVATED', 'Maven Claire', 'Romero');
-
-INSERT INTO USER_ACCOUNTS (ID, EMAIL_ADDRESS, PASSWORD, SALT, STATUS, FIRST_NAME, LAST_NAME)
-VALUES ('deactivatedId', 'deactivated@email.com', 'deactivatedPassword', 'deactivatedSalt', 'DEACTIVATED', 'Megan Claire', 'Romero');
